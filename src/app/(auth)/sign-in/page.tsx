@@ -37,12 +37,13 @@ export default function SignInPage() {
             <p>Made with ❤️ by redcrafter502!</p>
           </CardFooter>
         </Card>
-        <Link href="/">
-          <Button variant="secondary" className="w-full">
+
+        <Button variant="secondary" className="w-full" asChild>
+          <Link href="/">
             <ArrowLeft />
             Go back to Homepage
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </main>
   );
