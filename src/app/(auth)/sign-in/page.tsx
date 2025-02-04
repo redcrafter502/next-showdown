@@ -27,7 +27,7 @@ export default function SignInPage() {
             <form
               action={async () => {
                 "use server";
-                await signIn("trakt", { redirectTo: "/test" });
+                await signIn("trakt", { redirectTo: "/dashboard" });
               }}
             >
               <SignInButton />
