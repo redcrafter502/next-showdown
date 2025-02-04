@@ -1,16 +1,9 @@
-import { signIn } from "@/server/auth";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <form
-        action={async () => {
-          "use server";
-          await signIn("trakt");
-        }}
-      >
-        <button type="submit">Signin with Trakt</button>
-      </form>
+      <Link href="/sign-in">Sign In</Link>
     </main>
   );
 }
