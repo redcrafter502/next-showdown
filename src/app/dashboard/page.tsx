@@ -10,7 +10,7 @@ import SignOutButton from "./signOutButton";
 import { env } from "@/env";
 
 export default async function DashboardPage() {
-  const session: AuthSession | null = await auth();
+  const session = await auth();
 
   if (!session?.user) {
     redirect("/sign-in");

@@ -9,6 +9,7 @@ import Trakt from "next-auth/providers/trakt";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
+    accessToken: string;
     user: {
       id: string;
       // ...other properties
