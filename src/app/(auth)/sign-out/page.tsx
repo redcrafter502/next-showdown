@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { signOut } from "@/server/auth";
 
 export default function SignOutPage() {
@@ -9,7 +10,7 @@ export default function SignOutPage() {
                     await signOut();
                 }}
             >
-                <button type="submit">SignOut</button>
+                <Button type="submit">SignOut</Button>
             </form>
         </main>
     )
