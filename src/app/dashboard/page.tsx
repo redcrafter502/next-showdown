@@ -16,8 +16,6 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  console.log("SESSION", session);
-
   return (
     <>
       <UserInfo session={session} />
