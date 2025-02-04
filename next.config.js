@@ -5,6 +5,20 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    images: {
+        /* remotePatterns doesn't work for some reason */
+        /*remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "secure.gravatar.com",
+                port: "",
+                pathname: "/avatar/*",
+                search: "*",
+            }
+        ],*/
+        domains: ["secure.gravatar.com"],
+    }
+};
 
 export default config;
