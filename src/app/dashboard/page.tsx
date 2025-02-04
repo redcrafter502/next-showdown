@@ -7,18 +7,22 @@ import {
 import { auth, signOut } from "@/server/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./signOutButton";
+import { env } from "@/env";
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session: AuthSession | null = await auth();
 
   if (!session?.user) {
     redirect("/sign-in");
   }
 
+  console.log("SESSION", session);
+
   return (
     <>
       <UserInfo session={session} />
       <h1>This is the Dashbaord</h1>
+      <DisplayList listName="Test" accessToken={session.accessToken} />
     </>
   );
 }
@@ -29,6 +33,7 @@ type AuthSession = {
     image?: string | null;
     id: string;
   };
+  accessToken?: string;
   expires: string;
 };
 
@@ -66,5 +71,42 @@ function UserInfo({ session }: { session: AuthSession }) {
         </div>
       </PopoverContent>
     </Popover>
+  );
+}
+
+async function DisplayList({
+  listName,
+  accessToken,
+}: {
+  listName: string;
+  accessToken?: string;
+}) {
+  if (!accessToken) {
+    return <div>There was an error getting the access Token!</div>;
+  }
+
+  const ho = await fetch(
+    `https://api.trakt.tv/users/me/lists/${listName}/items/season`,
+    {
+      method: "GET",
+      headers: {
+        "trakt-api-version": "2",
+        "trakt-api-key": env.AUTH_TRAKT_ID,
+        Authorization: accessToken,
+      },
+    },
+  ).catch((err) => {
+    console.log("Fetch error", err);
+  });
+
+  console.log(ho);
+  const data: unknown = await ho?.json();
+  console.log(data);
+
+  return (
+    <div>
+      List:
+      {JSON.stringify(data)}
+    </div>
   );
 }
