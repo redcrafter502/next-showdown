@@ -7,7 +7,9 @@ import {
 import { auth, signOut } from "@/server/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./signOutButton";
-import { env } from "@/env";
+//import { env } from "@/env";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -20,8 +22,11 @@ export default async function DashboardPage() {
     <>
       <UserInfo session={session} />
       <h1>This is the Dashbaord</h1>
-      <DisplayList listName="Test" accessToken={session.accessToken} />
-      <DisplayLists accessToken={session.accessToken} />
+      <Button asChild>
+        <Link href="/dashboard/new">New</Link>
+      </Button>
+      {/*<DisplayList listName="Test" accessToken={session.accessToken} />
+      <DisplayLists accessToken={session.accessToken} />*/}
     </>
   );
 }
@@ -73,7 +78,7 @@ function UserInfo({ session }: { session: AuthSession }) {
   );
 }
 
-async function DisplayList({
+/*async function DisplayList({
   listName,
   accessToken,
 }: {
@@ -112,7 +117,7 @@ async function DisplayList({
 
 async function DisplayLists({ accessToken }: { accessToken?: string }) {
   if (!accessToken) {
-    return <div>There was an error getting the access Token!</div>;
+    return <div>There was an error getting the Access Token!</div>;
   }
 
   const ho = await fetch(`https://api.trakt.tv/users/me/lists/`, {
@@ -136,4 +141,4 @@ async function DisplayLists({ accessToken }: { accessToken?: string }) {
       {JSON.stringify(data)}
     </div>
   );
-}
+  }*/
