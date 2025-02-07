@@ -23,8 +23,13 @@ export default async function NewPage() {
     redirect("/sign-in");
   }
 
+  async function newAction(data: FormData) {
+    "use server";
+    console.log(data);
+  }
+
   return (
-    <form className="flex flex-col gap-4">
+    <form action={newAction} className="flex flex-col gap-4">
       <h1>New</h1>
       <div className="flex gap-4">
         <Input name="name" placeholder="Name" />
@@ -44,7 +49,7 @@ async function List({ accessToken }: { accessToken?: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <RadioGroup>
+      <RadioGroup name="list" required>
         {lists.map((list, index) => (
           <Card key={index}>
             <CardHeader>
