@@ -13,6 +13,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default async function NewPage() {
   const session = await auth();
@@ -22,10 +24,14 @@ export default async function NewPage() {
   }
 
   return (
-    <>
+    <form className="flex flex-col gap-4">
       <h1>New</h1>
+      <div className="flex gap-4">
+        <Input name="name" placeholder="Name" />
+        <Button>New</Button>
+      </div>
       <List accessToken={session.accessToken} />
-    </>
+    </form>
   );
 }
 
