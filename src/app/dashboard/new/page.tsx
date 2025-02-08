@@ -31,7 +31,6 @@ export default async function NewPage() {
   return (
     <form action={newAction} className="flex flex-col gap-4">
       <h1>New</h1>
-
       <div className="flex gap-4">
         <div>
           <Label htmlFor="name-input">Name</Label>
