@@ -30,6 +30,9 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [Trakt],
+  pages: {
+    signIn: "/sign-in",
+  },
   callbacks: {
     jwt: ({ token, account }) => {
       if (account) {
