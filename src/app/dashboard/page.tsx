@@ -4,8 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { auth, signOut } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { auth, signIn, signOut } from "@/server/auth";
 import SignOutButton from "./signOutButton";
 //import { env } from "@/env";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,8 @@ export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/sign-in");
+    await signIn();
+    return;
   }
 
   return (

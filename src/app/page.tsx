@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/server/auth";
+import { auth, signIn } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
   return (
@@ -7,10 +8,16 @@ export default function HomePage() {
       <Button
         onClick={async () => {
           "use server";
-          await signIn();
+          const session = await auth();
+
+          if (!session) {
+            await signIn();
+          }
+
+          redirect("/dashboard");
         }}
       >
-        Sign In
+        Get Started
       </Button>
     </main>
   );

@@ -1,5 +1,4 @@
-import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { auth, signIn } from "@/server/auth";
 //import { env } from "@/env";
 import {
   Card,
@@ -20,7 +19,8 @@ export default async function NewPage() {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/sign-in");
+    await signIn();
+    return;
   }
 
   async function newAction(data: FormData) {
