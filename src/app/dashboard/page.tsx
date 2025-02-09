@@ -25,8 +25,8 @@ export default async function DashboardPage() {
       <Button asChild>
         <Link href="/dashboard/new">New</Link>
       </Button>
-      {/*<DisplayList listName="Test" accessToken={session.accessToken} />
-      <DisplayLists accessToken={session.accessToken} />*/}
+      {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
+      {/*<DisplayLists accessToken={session.accessToken} />*/}
     </>
   );
 }
@@ -113,9 +113,9 @@ function UserInfo({ session }: { session: AuthSession }) {
       {JSON.stringify(data)}
     </div>
   );
-}
+}*/
 
-async function DisplayLists({ accessToken }: { accessToken?: string }) {
+/*async function DisplayLists({ accessToken }: { accessToken?: string }) {
   if (!accessToken) {
     return <div>There was an error getting the Access Token!</div>;
   }

@@ -89,7 +89,7 @@ async function List({ accessToken }: { accessToken?: string }) {
   );
 }
 
-async function getListsForUser(accessToken?: string) {
+async function getListsForUser(accessToken: string) {
   /*const resp = await fetch(`https://api.trakt.tv/users/me/lists/`, {
     method: "GET",
     headers: {
@@ -101,7 +101,8 @@ async function getListsForUser(accessToken?: string) {
     console.log("Fetch error", err);
   });
 
-  const data: unknown = await resp?.json();*/
+  const data: unknown = await resp?.json();
+  return data;*/
   // Mock data
   return [
     {
@@ -153,6 +154,167 @@ async function getListsForUser(accessToken?: string) {
         vip: false,
         vip_ep: false,
         ids: { slug: "redcrafter502" },
+      },
+    },
+  ];
+}
+
+async function getSeasonsForList(listName: string, accessToken: string) {
+  /*const resp = await fetch(
+    `https://api.trakt.tv/users/me/lists/${listName}/items/season`,
+    {
+      method: "GET",
+      headers: {
+        "trakt-api-version": "2",
+        "trakt-api-key": env.AUTH_TRAKT_ID,
+        Authorization: accessToken,
+      },
+    },
+  ).catch((err) => {
+    console.log("Fetch error", err);
+  });
+
+  const data: unknown = await resp?.json();
+  return data;*/
+
+  // Mock Data
+  return [
+    {
+      rank: 1,
+      id: 1169288812,
+      listed_at: "2025-02-04T11:49:02.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 24,
+        ids: { trakt: 1500, tvdb: 488447, tmdb: 3605, tvrage: null },
+      },
+      show: {
+        title: "The Simpsons",
+        year: 1989,
+        ids: {
+          trakt: 455,
+          slug: "the-simpsons",
+          tvdb: 71663,
+          imdb: "tt0096697",
+          tmdb: 456,
+          tvrage: null,
+        },
+      },
+    },
+    {
+      rank: 2,
+      id: 1169288954,
+      listed_at: "2025-02-04T11:49:47.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 4,
+        ids: { trakt: 1480, tvdb: 2738, tmdb: 3585, tvrage: null },
+      },
+      show: {
+        title: "The Simpsons",
+        year: 1989,
+        ids: {
+          trakt: 455,
+          slug: "the-simpsons",
+          tvdb: 71663,
+          imdb: "tt0096697",
+          tmdb: 456,
+          tvrage: null,
+        },
+      },
+    },
+    {
+      rank: 3,
+      id: 1169288960,
+      listed_at: "2025-02-04T11:49:53.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 7,
+        ids: { trakt: 1483, tvdb: 2741, tmdb: 3588, tvrage: null },
+      },
+      show: {
+        title: "The Simpsons",
+        year: 1989,
+        ids: {
+          trakt: 455,
+          slug: "the-simpsons",
+          tvdb: 71663,
+          imdb: "tt0096697",
+          tmdb: 456,
+          tvrage: null,
+        },
+      },
+    },
+    {
+      rank: 4,
+      id: 1169288967,
+      listed_at: "2025-02-04T11:49:56.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 11,
+        ids: { trakt: 1487, tvdb: 2729, tmdb: 3592, tvrage: null },
+      },
+      show: {
+        title: "The Simpsons",
+        year: 1989,
+        ids: {
+          trakt: 455,
+          slug: "the-simpsons",
+          tvdb: 71663,
+          imdb: "tt0096697",
+          tmdb: 456,
+          tvrage: null,
+        },
+      },
+    },
+    {
+      rank: 5,
+      id: 1169289012,
+      listed_at: "2025-02-04T11:50:20.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 7,
+        ids: { trakt: 2089, tvdb: 468993, tmdb: 1875, tvrage: null },
+      },
+      show: {
+        title: "Futurama",
+        year: 1999,
+        ids: {
+          trakt: 614,
+          slug: "futurama",
+          tvdb: 73871,
+          imdb: "tt0149460",
+          tmdb: 615,
+          tvrage: null,
+        },
+      },
+    },
+    {
+      rank: 6,
+      id: 1169289017,
+      listed_at: "2025-02-04T11:50:23.000Z",
+      notes: null,
+      type: "season",
+      season: {
+        number: 2,
+        ids: { trakt: 2084, tvdb: 6589, tmdb: 1869, tvrage: null },
+      },
+      show: {
+        title: "Futurama",
+        year: 1999,
+        ids: {
+          trakt: 614,
+          slug: "futurama",
+          tvdb: 73871,
+          imdb: "tt0149460",
+          tmdb: 615,
+          tvrage: null,
+        },
       },
     },
   ];
