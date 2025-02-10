@@ -89,7 +89,7 @@ async function List({ accessToken }: { accessToken?: string }) {
   );
 }
 
-async function getListsForUser(accessToken: string) {
+async function getListsForUser(_accessToken: string) {
   /*const resp = await fetch(`https://api.trakt.tv/users/me/lists/`, {
     method: "GET",
     headers: {
@@ -159,7 +159,8 @@ async function getListsForUser(accessToken: string) {
   ];
 }
 
-async function getSeasonsForList(listName: string, accessToken: string) {
+/* eslint-disable */
+async function getSeasonsForList(_listName: string, _accessToken: string) {
   /*const resp = await fetch(
     `https://api.trakt.tv/users/me/lists/${listName}/items/season`,
     {
@@ -319,3 +320,4 @@ async function getSeasonsForList(listName: string, accessToken: string) {
     },
   ];
 }
+/* eslint-enable */
