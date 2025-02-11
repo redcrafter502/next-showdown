@@ -44,6 +44,27 @@ export default async function NewPage() {
     if (!formValues.success) return;
 
     console.log(formValues.data);
+
+    const dbData = {
+      id: 0, // Autoincrementing int
+      urlId: "fbomkiütrpkblgfBV", // generate random Id
+      name: formValues.data.name,
+      listName: formValues.data.list, // get list name from selection somehow
+      traktUserId: "fd", // auth().session.user.id
+      nominatableSeasonCount: formValues.data.nominatableSeasonCount,
+      state: "open",
+      createdAt: Date.now(),
+    };
+
+    // authentication security things
+
+    // Insert into DB
+
+    // Insert Seasons into db
+
+    console.log(dbData.urlId);
+
+    // redirect to page for getting the url with option to close the nominationRequest
   }
 
   return (
