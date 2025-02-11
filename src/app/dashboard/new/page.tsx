@@ -73,7 +73,12 @@ export default async function NewPage() {
       <div className="flex gap-4">
         <div>
           <Label htmlFor="name-input">Name</Label>
-          <Input name="name" placeholder="Name" id="name-input" />
+          <Input
+            name="name"
+            placeholder="Name"
+            id="name-input"
+            maxLength={255}
+          />
         </div>
         <div>
           <Label htmlFor="nominatable-season-count-input">
