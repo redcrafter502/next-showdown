@@ -14,6 +14,13 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
+
+const createNominationFormSchema = z.object({
+  name: z.string(),
+  nominatableSeasonCount: z.coerce.number().positive().int(),
+  list: z.string(),
+});
 
 export default async function NewPage() {
   const session = await auth();
@@ -23,9 +30,20 @@ export default async function NewPage() {
     return;
   }
 
-  async function createNominationRequest(data: FormData) {
+  async function createNominationRequest(formData: FormData) {
     "use server";
-    console.log(data);
+    console.log(formData);
+
+    const formValues = createNominationFormSchema.safeParse({
+      name: formData.get("name"),
+      nominatableSeasonCount: formData.get("nominatable-season-count"),
+      list: formData.get("list"),
+    });
+
+    // TODO: error management
+    if (!formValues.success) return;
+
+    console.log(formValues.data);
   }
 
   return (
@@ -35,6 +53,19 @@ export default async function NewPage() {
         <div>
           <Label htmlFor="name-input">Name</Label>
           <Input name="name" placeholder="Name" id="name-input" />
+        </div>
+        <div>
+          <Label htmlFor="nominatable-season-count-input">
+            Nominatable Season Count
+          </Label>
+          <Input
+            name="nominatable-season-count"
+            type="number"
+            min={1}
+            required
+            placeholder="Nominatable Season Count"
+            id="nominatable-season-count-input"
+          />
         </div>
         <Button>Create and get link</Button>
       </div>
