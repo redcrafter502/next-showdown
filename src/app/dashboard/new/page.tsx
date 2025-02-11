@@ -23,20 +23,20 @@ export default async function NewPage() {
     return;
   }
 
-  async function newAction(data: FormData) {
+  async function createNominationRequest(data: FormData) {
     "use server";
     console.log(data);
   }
 
   return (
-    <form action={newAction} className="flex flex-col gap-4">
-      <h1>New</h1>
+    <form action={createNominationRequest} className="flex flex-col gap-4">
+      <h1>New Nomination Request</h1>
       <div className="flex gap-4">
         <div>
           <Label htmlFor="name-input">Name</Label>
           <Input name="name" placeholder="Name" id="name-input" />
         </div>
-        <Button>New</Button>
+        <Button>Create and get link</Button>
       </div>
       <List accessToken={session.accessToken} />
     </form>

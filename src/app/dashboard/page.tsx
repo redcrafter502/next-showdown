@@ -23,7 +23,7 @@ export default async function DashboardPage() {
       <UserInfo session={session} />
       <h1>This is the Dashbaord</h1>
       <Button asChild>
-        <Link href="/dashboard/new">New</Link>
+        <Link href="/dashboard/new">New Nomination Request</Link>
       </Button>
       {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
       {/*<DisplayLists accessToken={session.accessToken} />*/}
