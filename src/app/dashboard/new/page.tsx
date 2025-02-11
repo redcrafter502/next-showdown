@@ -60,7 +60,7 @@ export default async function NewPage() {
 
     // Insert into DB
 
-    // Insert Seasons into db
+    // Insert Seasons into db after getting them from Trakt
 
     console.log(dbData.urlId);
 
