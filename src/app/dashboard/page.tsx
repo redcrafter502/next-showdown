@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/server/db";
 import { nominationRequestsTable, nominationState } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import {
   Card,
   CardContent,
@@ -53,7 +53,7 @@ async function MyNominationRequests({ userId }: { userId: string }) {
     .select()
     .from(nominationRequestsTable)
     .where(eq(nominationRequestsTable.traktUserId, userId))
-    .orderBy(nominationRequestsTable.updatedAt);
+    .orderBy(desc(nominationRequestsTable.updatedAt));
 
   console.log(nominationRequests);
 
