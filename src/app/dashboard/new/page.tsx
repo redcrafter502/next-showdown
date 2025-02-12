@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { db } from "@/server/db";
-import { nominationRequestsTable } from "@/server/db/schema";
+import { nominationRequestsTable, seasonsTable } from "@/server/db/schema";
 import { redirect } from "next/navigation";
 
 const createNominationFormSchema = z.object({
@@ -48,25 +48,34 @@ export default async function NewPage() {
     const session = await auth();
     if (!session?.user) return;
 
+    const seasons = await getSeasonsForList(
+      formValues.data.list,
+      session.accessToken,
+    );
+
     const nominationRequest = await db
       .insert(nominationRequestsTable)
       .values({
         name: formValues.data.name,
-        listName: formValues.data.list, // doThing()
+        listName: formValues.data.list,
         traktUserId: session.user.id,
         nominatableSeasonCount: formValues.data.nominatableSeasonCount,
       })
-      .returning({ urlId: nominationRequestsTable.urlId });
+      .returning({
+        urlId: nominationRequestsTable.urlId,
+        id: nominationRequestsTable.id,
+      });
 
-    console.log(nominationRequest);
+    const seasonsPromises = seasons.map((season) =>
+      db.insert(seasonsTable).values({
+        nominationRequestId: nominationRequest[0]?.id,
+        title: season.show.title,
+        year: season.show.year,
+        seasonNumber: season.season.number,
+      }),
+    );
+    await Promise.all(seasonsPromises);
 
-    // authentication security things
-
-    // Insert into DB
-
-    // Insert Seasons into db after getting them from Trakt
-
-    // redirect to page for getting the url with option to close the nominationRequest
     redirect(`/dashboard/open/${nominationRequest[0]?.urlId}`);
   }
 
