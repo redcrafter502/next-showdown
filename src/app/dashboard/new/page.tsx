@@ -48,21 +48,6 @@ export default async function NewPage() {
     const session = await auth();
     if (!session?.user) return;
 
-    console.log(session);
-
-    console.log(formValues.data);
-
-    const dbData = {
-      id: 0, // Autoincrementing int
-      urlId: "fbomkiütrpkblgfBV", // generate random Id
-      name: formValues.data.name,
-      listName: formValues.data.list, // get list name from selection somehow
-      traktUserId: "fd", // auth().session.user.id
-      nominatableSeasonCount: formValues.data.nominatableSeasonCount,
-      state: "open",
-      createdAt: Date.now(),
-    };
-
     const nominationRequest = await db
       .insert(nominationRequestsTable)
       .values({
@@ -80,8 +65,6 @@ export default async function NewPage() {
     // Insert into DB
 
     // Insert Seasons into db after getting them from Trakt
-
-    console.log(dbData.urlId);
 
     // redirect to page for getting the url with option to close the nominationRequest
     redirect(`/dashboard/open/${nominationRequest[0]?.urlId}`);
@@ -148,7 +131,7 @@ async function List({ accessToken }: { accessToken?: string }) {
             <CardContent>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
-                  value={index.toString()}
+                  value={list.name}
                   id={`new-list-select-${index}`}
                 />
                 <Label htmlFor={`new-list-select-${index}`}>
