@@ -15,6 +15,8 @@ import { ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { db } from "@/server/db";
+import { nominationRequestsTable, nominationState } from "@/server/db/schema";
 
 const createNominationFormSchema = z.object({
   name: z.string(),
@@ -32,7 +34,6 @@ export default async function NewPage() {
 
   async function createNominationRequest(formData: FormData) {
     "use server";
-    console.log(formData);
 
     const formValues = createNominationFormSchema.safeParse({
       name: formData.get("name"),
@@ -42,6 +43,11 @@ export default async function NewPage() {
 
     // TODO: error management
     if (!formValues.success) return;
+
+    const session = await auth();
+    if (!session?.user) return;
+
+    console.log(session);
 
     console.log(formValues.data);
 
@@ -55,6 +61,18 @@ export default async function NewPage() {
       state: "open",
       createdAt: Date.now(),
     };
+
+    const nominationRequest = await db
+      .insert(nominationRequestsTable)
+      .values({
+        name: formValues.data.name,
+        listName: formValues.data.list, // doThing()
+        traktUserId: session.user.id,
+        nominatableSeasonCount: formValues.data.nominatableSeasonCount,
+      })
+      .returning({ urlId: nominationRequestsTable.urlId });
+
+    console.log(nominationRequest);
 
     // authentication security things
 
