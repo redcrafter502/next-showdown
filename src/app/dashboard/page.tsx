@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/server/db";
-import { nominationRequestsTable, nominationState } from "@/server/db/schema";
+import { nominationRequestsTable } from "@/server/db/schema";
 import { desc, eq } from "drizzle-orm";
 import {
   Card,
@@ -37,9 +37,9 @@ export default async function DashboardPage() {
       <Button asChild>
         <Link href="/dashboard/new">New Nomination Request</Link>
       </Button>
-      {/*<Suspense fallback={<div>Loading...</div>}>*/}
-      <MyNominationRequests userId={session.user.id} />
-      {/*</Suspense>*/}
+      <Suspense fallback={<div>Loading...</div>}>
+        <MyNominationRequests userId={session.user.id} />
+      </Suspense>
       {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
       {/*<DisplayLists accessToken={session.accessToken} />*/}
     </>
