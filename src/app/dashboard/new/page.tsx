@@ -69,6 +69,7 @@ export default async function NewPage() {
     const seasonsPromises = seasons.map((season) =>
       db.insert(seasonsTable).values({
         nominationRequestId: nominationRequest[0]?.id,
+        traktSeasonId: season.id,
         title: season.show.title,
         year: season.show.year,
         seasonNumber: season.season.number,
