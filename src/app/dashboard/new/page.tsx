@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { nominationRequestsTable, nominationState } from "@/server/db/schema";
+import { redirect } from "next/navigation";
 
 const createNominationFormSchema = z.object({
   name: z.string(),
@@ -83,6 +84,7 @@ export default async function NewPage() {
     console.log(dbData.urlId);
 
     // redirect to page for getting the url with option to close the nominationRequest
+    redirect(`/dashboard/open/${nominationRequest[0]?.urlId}`);
   }
 
   return (
