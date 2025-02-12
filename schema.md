@@ -15,10 +15,10 @@ nominationRequests {
 nominations {
   id string pk
   nominationRequestId int fk
-  nominatedSeasonId string
   count int
   userId string fk
-  state enum(open,selected,discarded)
+  state enum(open,nominated,revoked)
+  nominatedSeasonId int fk
 
   createdAt timestamp
 }
@@ -33,6 +33,7 @@ users {
 seasons {
   id int pk
   nominationRequestId int fk
+  traktSeasonId int
   title string
   year int
   seasonNumber int
@@ -43,3 +44,5 @@ nominationRequests.id < nominations.nominationRequestId
 users.id < nominations.userId
 
 nominationRequests.id < seasons.nominationRequestId
+
+seasons.id < nominations.nominatedSeasonId

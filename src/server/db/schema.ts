@@ -57,6 +57,7 @@ export const seasonsTable = createTable(
       () => nominationRequestsTable.id,
       { onDelete: "cascade" },
     ),
+    traktSeasonId: integer("traktSeasonId").notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     year: integer("year").notNull(),
     seasonNumber: integer("seasonNumber").notNull(),
