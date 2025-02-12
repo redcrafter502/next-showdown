@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { db } from "@/server/db";
-import { nominationRequestsTable, nominationState } from "@/server/db/schema";
+import { nominationRequestsTable } from "@/server/db/schema";
 import { redirect } from "next/navigation";
 
 const createNominationFormSchema = z.object({
