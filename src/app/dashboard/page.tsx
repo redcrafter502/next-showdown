@@ -9,6 +9,18 @@ import SignOutButton from "./signOutButton";
 //import { env } from "@/env";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
+import { db } from "@/server/db";
+import { nominationRequestsTable, nominationState } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -25,9 +37,63 @@ export default async function DashboardPage() {
       <Button asChild>
         <Link href="/dashboard/new">New Nomination Request</Link>
       </Button>
+      {/*<Suspense fallback={<div>Loading...</div>}>*/}
+      <MyNominationRequests userId={session.user.id} />
+      {/*</Suspense>*/}
       {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
       {/*<DisplayLists accessToken={session.accessToken} />*/}
     </>
+  );
+}
+
+async function MyNominationRequests({ userId }: { userId: string }) {
+  // TODO: Add pagination
+
+  const nominationRequests = await db
+    .select()
+    .from(nominationRequestsTable)
+    .where(eq(nominationRequestsTable.traktUserId, userId))
+    .orderBy(nominationRequestsTable.updatedAt);
+
+  console.log(nominationRequests);
+
+  return (
+    <div className="flex flex-wrap gap-4">
+      {nominationRequests.map((nominationRequest) => (
+        <Link
+          href={
+            nominationRequest.state === "open"
+              ? `/dashboard/open/${nominationRequest.urlId}`
+              : `/dashboard/closed/${nominationRequest.urlId}`
+          }
+          key={nominationRequest.id}
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                {nominationRequest.name || "<no name provided>"}
+              </CardTitle>
+              <CardDescription>
+                {nominationRequest.listName}{" "}
+                <Badge
+                  variant={
+                    nominationRequest.state === "open"
+                      ? "destructive"
+                      : "default"
+                  }
+                >
+                  {nominationRequest.state}
+                </Badge>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>CreatedAt: {nominationRequest.createdAt.toString()}</p>
+              <p>UpdatedAt: {nominationRequest.updatedAt.toString()}</p>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
   );
 }
 
