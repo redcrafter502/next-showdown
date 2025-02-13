@@ -7,7 +7,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { SignInButton } from "@/app/(auth)/sign-in/signInButton";
+import { SignInButton } from "@/app/(home)/sign-in/signInButton";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
