@@ -1,3 +1,3 @@
-export default function Loading() {
-  return "Loading Dashboard";
-}
+import LoadingSpinner from "@/components/loadingSpinner";
+
+export default LoadingSpinner;

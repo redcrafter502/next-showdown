@@ -1,11 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { auth, signIn, signOut } from "@/server/auth";
-import SignOutButton from "./signOutButton";
+import { auth, signIn } from "@/server/auth";
 //import { env } from "@/env";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -21,24 +14,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import LoadingSpinner from "@/components/loadingSpinner";
 
-export default async function DashboardPage() {
-  const session = await auth();
-
-  if (!session?.user) {
-    await signIn();
-    return;
-  }
-
+export default function DashboardPage() {
   return (
     <>
-      <UserInfo session={session} />
       <h1>This is the Dashbaord</h1>
       <Button asChild>
         <Link href="/dashboard/new">New Nomination Request</Link>
       </Button>
-      <Suspense fallback={<div>Loading...</div>}>
-        <MyNominationRequests userId={session.user.id} />
+      <Suspense fallback={<LoadingSpinner />}>
+        <MyNominationRequests />
       </Suspense>
       {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
       {/*<DisplayLists accessToken={session.accessToken} />*/}
@@ -46,7 +32,12 @@ export default async function DashboardPage() {
   );
 }
 
-async function MyNominationRequests({ userId }: { userId: string }) {
+async function MyNominationRequests() {
+  const session = await auth();
+  if (!session?.user) return signIn();
+
+  const userId = session.user.id;
+
   // TODO: Add pagination
 
   const nominationRequests = await db
@@ -94,53 +85,6 @@ async function MyNominationRequests({ userId }: { userId: string }) {
         </Link>
       ))}
     </div>
-  );
-}
-
-type AuthSession = {
-  user: {
-    name?: string | null;
-    image?: string | null;
-    id: string;
-  };
-  accessToken?: string;
-  expires: string;
-};
-
-function UserInfo({ session }: { session: AuthSession }) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Avatar>
-          <AvatarImage src={session.user.image ?? ""} />
-          <AvatarFallback>{(session.user.name ?? "U")[0]}</AvatarFallback>
-        </Avatar>
-      </PopoverTrigger>
-      <PopoverContent>
-        <div className="flex flex-col gap-3">
-          <div>
-            <p>My Account</p>
-            <p>{session.user.name ?? "<your account has no name>"}</p>
-          </div>
-          <div>
-            <p>Account ID</p>
-            <p>{session.user.id}</p>
-          </div>
-          <div>
-            <p>Session Expires</p>
-            <p>{session.expires}</p>
-          </div>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/" });
-            }}
-          >
-            <SignOutButton />
-          </form>
-        </div>
-      </PopoverContent>
-    </Popover>
   );
 }
 
