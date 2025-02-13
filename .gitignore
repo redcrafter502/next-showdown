@@ -42,6 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# Zed Editor
+.zed
+
 # idea files
 .idea
 .fleet
