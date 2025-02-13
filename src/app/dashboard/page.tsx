@@ -1,6 +1,5 @@
 import { auth, signIn } from "@/server/auth";
 //import { env } from "@/env";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/server/db";
@@ -20,9 +19,6 @@ export default function DashboardPage() {
   return (
     <>
       <h1>This is the Dashbaord</h1>
-      <Button asChild>
-        <Link href="/dashboard/new">New Nomination Request</Link>
-      </Button>
       <Suspense fallback={<LoadingSpinner />}>
         <MyNominationRequests />
       </Suspense>

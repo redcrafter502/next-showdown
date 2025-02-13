@@ -10,14 +10,21 @@ import { Suspense } from "react";
 import LoadingSpinner from "./loading";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="m-2">
       <header className="flex items-center justify-between rounded-md bg-blue-50 p-1">
-        <nav>
+        <nav className="flex gap-2">
           <Button variant="outline" asChild>
             <Link href="/dashboard">Dashboard</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link href="/dashboard/new">
+              <Plus />
+              Create a nomination request
+            </Link>
           </Button>
         </nav>
         <Suspense
