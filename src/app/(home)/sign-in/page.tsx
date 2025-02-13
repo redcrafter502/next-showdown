@@ -14,37 +14,35 @@ import { ArrowLeft } from "lucide-react";
 
 export default function SignInPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="flex max-w-md flex-col gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>SignIn</CardTitle>
-            <CardDescription>
-              Sign In to easily find the next show to watch!
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              action={async () => {
-                "use server";
-                await signIn("trakt", { redirectTo: "/dashboard" });
-              }}
-            >
-              <SignInButton />
-            </form>
-          </CardContent>
-          <CardFooter>
-            <p>Made with ❤️ by redcrafter502!</p>
-          </CardFooter>
-        </Card>
+    <div className="flex max-w-md flex-col gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>SignIn</CardTitle>
+          <CardDescription>
+            Sign In to easily find the next show to watch!
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            action={async () => {
+              "use server";
+              await signIn("trakt", { redirectTo: "/dashboard" });
+            }}
+          >
+            <SignInButton />
+          </form>
+        </CardContent>
+        <CardFooter>
+          <p>Made with ❤️ by redcrafter502!</p>
+        </CardFooter>
+      </Card>
 
-        <Button variant="secondary" className="w-full" asChild>
-          <Link href="/">
-            <ArrowLeft />
-            Go back to Homepage
-          </Link>
-        </Button>
-      </div>
-    </main>
+      <Button variant="secondary" className="w-full" asChild>
+        <Link href="/">
+          <ArrowLeft />
+          Go back to Homepage
+        </Link>
+      </Button>
+    </div>
   );
 }
