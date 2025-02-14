@@ -17,14 +17,14 @@ import LoadingSpinner from "@/components/loadingSpinner";
 
 export default function DashboardPage() {
   return (
-    <>
-      <h1>This is the Dashbaord</h1>
+    <div className="mt-4 flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Your nomination requests:</h1>
       <Suspense fallback={<LoadingSpinner />}>
         <MyNominationRequests />
       </Suspense>
       {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
       {/*<DisplayLists accessToken={session.accessToken} />*/}
-    </>
+    </div>
   );
 }
 
