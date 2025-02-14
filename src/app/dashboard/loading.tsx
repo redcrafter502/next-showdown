@@ -1,3 +1,9 @@
-import LoadingSpinner from "@/components/loadingSpinner";
+import { Loader2 } from "lucide-react";
 
-export default LoadingSpinner;
+export default function Loading() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <Loader2 className="animate-spin" size={128} />
+    </div>
+  );
+}
