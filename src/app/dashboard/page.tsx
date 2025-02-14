@@ -18,7 +18,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 export default function DashboardPage() {
   return (
     <div className="mt-4 flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Your nomination requests:</h1>
+      <h1 className="text-2xl font-bold">Your nomination requests</h1>
       <Suspense fallback={<LoadingSpinner />}>
         <MyNominationRequests />
       </Suspense>

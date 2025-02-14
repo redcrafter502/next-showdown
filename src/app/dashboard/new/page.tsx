@@ -81,9 +81,9 @@ export default async function NewPage() {
   }
 
   return (
-    <form action={createNominationRequest} className="flex flex-col gap-4">
-      <h1>New Nomination Request</h1>
-      <div className="flex gap-4">
+    <form action={createNominationRequest} className="mt-4 flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Create a new Nomination Request</h1>
+      <div className="flex items-end gap-4">
         <div>
           <Label htmlFor="name-input">Name</Label>
           <Input
