@@ -16,8 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="m-2">
       <header className="flex items-center justify-between rounded-md bg-blue-50 p-1">
-        {/* add flex-wrap */}
-        <nav className="flex gap-2">
+        <nav className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
             <Link href="/dashboard">Dashboard</Link>
           </Button>
