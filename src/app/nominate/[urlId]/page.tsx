@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
 
 export default async function NomitatePage({
   params,
@@ -62,10 +61,6 @@ export default async function NomitatePage({
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2.5">
                     {season.title}
-                    <a href={`${season.traktSeasonId}`}>
-                      <ExternalLink size="15" />
-                      <span className="sr-only">View this season on Trakt</span>
-                    </a>
                   </CardTitle>
                   <CardDescription>
                     {season.year} | Season {season.seasonNumber}
