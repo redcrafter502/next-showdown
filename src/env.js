@@ -8,6 +8,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string(),
+    JWT_SECRET: z.string(),
     AUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string()
@@ -34,6 +35,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
+    JWT_SECRET: process.env.JWT_SECRET,
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_TRAKT_ID: process.env.AUTH_TRAKT_ID,
     AUTH_TRAKT_SECRET: process.env.AUTH_TRAKT_SECRET,
