@@ -4,7 +4,11 @@ import { useEffect, useState, createContext } from "react";
 import { getUser } from "./server";
 import { useContext } from "react";
 
-const UserContext = createContext("");
+const UserContext = createContext({
+  name: "",
+  loading: true,
+  error: "",
+});
 
 export function useUser() {
   return useContext(UserContext);
@@ -16,16 +20,24 @@ export default function UserProvider({
   children: React.ReactNode;
 }) {
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     getUser()
       .then((user) => {
         setName(user?.name ?? "");
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((error: Error) => {
+        setError(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
-  return <UserContext.Provider value={name}>{children}</UserContext.Provider>;
+  const value = { name, loading, error };
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
