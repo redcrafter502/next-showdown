@@ -10,7 +10,6 @@ import { env } from "@/env";
 export async function getUser() {
   const cookieStore = await cookies();
   const userCookie = cookieStore.get("user");
-  console.log("USER COOKIE", userCookie);
 
   let decoded;
   try {
@@ -18,9 +17,6 @@ export async function getUser() {
       id: string;
     };
   } catch {}
-
-  console.log("DECODED", decoded);
-  console.log("DECODED ID", decoded?.id);
 
   if (typeof decoded?.id !== "string") {
     const randomName = `User_${Math.floor(Math.random() * 1000)}`;
@@ -37,7 +33,6 @@ export async function getUser() {
       httpOnly: true,
       expires: new Date(Date.now() + 3600000),
     });
-    console.log(token);
     return user[0];
   } else {
     const user = await db
@@ -57,7 +52,6 @@ export async function getUser() {
       httpOnly: true,
       expires: new Date(Date.now() + 3600000),
     });
-    console.log(newToken);
 
     return user[0];
   }
