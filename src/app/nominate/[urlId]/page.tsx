@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import NominationButtons from "./nominationButtons";
 
 export default async function NomitatePage({
   params,
@@ -66,7 +67,9 @@ export default async function NomitatePage({
                     {season.year} | Season {season.seasonNumber}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>Nominate this season</CardContent>
+                <CardContent className="flex items-center gap-4">
+                  <NominationButtons />
+                </CardContent>
               </Card>
             ))}
         </div>
