@@ -48,12 +48,15 @@ export default async function NomitatePage({
     return <p>This nomination request is already closed</p>;
   }
 
+  const nominatableSeasonCount =
+    seasons[0].nominationRequest.nominatableSeasonCount;
+
   return (
     <UserProvider>
       <div className="flex flex-col gap-4">
         <p>Nominate for Request with ID: {urlId}</p>
         <UserNameDisplay />
-        <p>{seasons[0].nominationRequest.nominatableSeasonCount}</p>
+        <p>{nominatableSeasonCount}</p>
         <div className="flex flex-wrap gap-4">
           {seasons
             .map((s) => s.season)
@@ -68,7 +71,10 @@ export default async function NomitatePage({
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4">
-                  <NominationButtons />
+                  <NominationButtons
+                    traktId={season.traktSeasonId}
+                    nominatableSeasonCount={nominatableSeasonCount}
+                  />
                 </CardContent>
               </Card>
             ))}
