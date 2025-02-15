@@ -19,21 +19,7 @@ export async function getUser() {
   } catch {}
 
   if (typeof decoded?.id !== "string") {
-    const randomName = `User_${Math.floor(Math.random() * 1000)}`;
-    const user = await db
-      .insert(usersTable)
-      .values({
-        name: randomName,
-      })
-      .returning();
-    const token = jwt.sign({ id: user[0]?.id }, env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    cookieStore.set("user", token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 3600000),
-    });
-    return user[0];
+    return await createUser();
   } else {
     const user = await db
       .select()
@@ -42,7 +28,7 @@ export async function getUser() {
       .limit(1);
 
     if (user.length === 0) {
-      return;
+      return await createUser();
     }
 
     const newToken = jwt.sign({ id: user[0]?.id }, env.JWT_SECRET, {
@@ -55,4 +41,24 @@ export async function getUser() {
 
     return user[0];
   }
+}
+
+async function createUser() {
+  const cookieStore = await cookies();
+
+  const randomName = `User_${Math.floor(Math.random() * 1000)}`;
+  const user = await db
+    .insert(usersTable)
+    .values({
+      name: randomName,
+    })
+    .returning();
+  const token = jwt.sign({ id: user[0]?.id }, env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  cookieStore.set("user", token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + 3600000),
+  });
+  return user[0];
 }
