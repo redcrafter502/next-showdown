@@ -20,7 +20,6 @@ export default function UserProvider({
   useEffect(() => {
     getUser()
       .then((user) => {
-        console.log(user);
         setName(user?.name ?? "");
       })
       .catch((error) => {
