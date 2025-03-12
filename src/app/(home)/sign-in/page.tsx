@@ -26,7 +26,7 @@ export default function SignInPage() {
           <form
             action={async () => {
               "use server";
-              await signIn("trakt", { redirectTo: "/dashboard" });
+              await signIn("trakt", { redirectTo: "/dashboard" }); // TODO: redirect to callback url from search params
             }}
           >
             <SignInButton />
