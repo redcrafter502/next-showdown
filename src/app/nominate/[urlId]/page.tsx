@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import NominationButtons from "./nominationButtons";
+import { DataProvider, NominationButton } from "./client";
 
 export default async function NomitatePage({
   params,
@@ -51,35 +51,45 @@ export default async function NomitatePage({
   const nominatableSeasonCount =
     seasons[0].nominationRequest.nominatableSeasonCount;
 
+  const defaultNominations = seasons.map((season) => ({
+    traktId: season.season.traktSeasonId,
+    count: 0,
+  }));
+
   return (
     <UserProvider>
-      <div className="flex flex-col gap-4">
-        <p>Nominate for Request with ID: {urlId}</p>
-        <UserNameDisplay />
-        <p>{nominatableSeasonCount}</p>
-        <div className="flex flex-wrap gap-4">
-          {seasons
-            .map((s) => s.season)
-            .map((season) => (
-              <Card key={season.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2.5">
-                    {season.title}
-                  </CardTitle>
-                  <CardDescription>
-                    {season.year} | Season {season.seasonNumber}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex items-center gap-4">
-                  <NominationButtons
-                    traktId={season.traktSeasonId}
-                    nominatableSeasonCount={nominatableSeasonCount}
-                  />
-                </CardContent>
-              </Card>
-            ))}
+      <DataProvider
+        nominatableSeasonCount={nominatableSeasonCount}
+        defaultNominations={defaultNominations}
+      >
+        <div className="flex flex-col gap-4">
+          <p>Nominate for Request with ID: {urlId}</p>
+          <UserNameDisplay />
+          <p>{nominatableSeasonCount}</p>
+          <div className="flex flex-wrap gap-4">
+            {seasons
+              .map((s) => s.season)
+              .map((season) => (
+                <Card key={season.id}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2.5">
+                      {season.title}
+                    </CardTitle>
+                    <CardDescription>
+                      {season.year} | Season {season.seasonNumber}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex items-center gap-4">
+                    <NominationButton
+                      traktId={season.traktSeasonId}
+                      nominatableSeasonCount={nominatableSeasonCount}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
         </div>
-      </div>
+      </DataProvider>
     </UserProvider>
   );
 }
