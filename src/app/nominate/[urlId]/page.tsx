@@ -52,7 +52,7 @@ export default async function NomitatePage({
     seasons[0].nominationRequest.nominatableSeasonCount;
 
   const defaultNominations = seasons.map((season) => ({
-    traktId: season.season.traktSeasonId,
+    id: season.season.id,
     count: 0,
   }));
 
@@ -81,7 +81,7 @@ export default async function NomitatePage({
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
                     <NominationButton
-                      traktId={season.traktSeasonId}
+                      id={season.id}
                       nominatableSeasonCount={nominatableSeasonCount}
                     />
                   </CardContent>

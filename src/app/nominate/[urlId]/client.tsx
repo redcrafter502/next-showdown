@@ -7,13 +7,13 @@ import { DiamondMinus, DiamondPlus } from "lucide-react";
 
 type DataContextType = {
   nominations: {
-    traktId: number;
+    id: number;
     count: number;
   }[];
   nominatedSeasons: number;
 
-  incrementNomination: (traktId: number) => void;
-  decrementNomination: (traktId: number) => void;
+  incrementNomination: (id: number) => void;
+  decrementNomination: (id: number) => void;
 } | null;
 
 const DataContext = createContext<DataContextType>(null);
@@ -30,7 +30,7 @@ export function DataProvider({
   children: React.ReactNode;
   nominatableSeasonCount: number;
   defaultNominations: {
-    traktId: number;
+    id: number;
     count: number;
   }[];
 }) {
@@ -45,10 +45,10 @@ export function DataProvider({
       nominations: nominationCounts,
       nominatedSeasons,
 
-      incrementNomination: (traktId: number) => {
+      incrementNomination: (id: number) => {
         setNominationCounts((prev) => {
           return prev.map((nomination) => {
-            if (nomination.traktId !== traktId) return nomination;
+            if (nomination.id !== id) return nomination;
             return {
               ...nomination,
               count: Math.min(nomination.count + 1, nominatableSeasonCount),
@@ -56,10 +56,10 @@ export function DataProvider({
           });
         });
       },
-      decrementNomination: (traktId: number) => {
+      decrementNomination: (id: number) => {
         setNominationCounts((prev) => {
           return prev.map((nomination) => {
-            if (nomination.traktId !== traktId) return nomination;
+            if (nomination.id !== id) return nomination;
             return {
               ...nomination,
               count: Math.max(nomination.count - 1, 0),
@@ -76,10 +76,10 @@ export function DataProvider({
 
 export function NominationButton({
   nominatableSeasonCount,
-  traktId,
+  id,
 }: {
   nominatableSeasonCount: number;
-  traktId: number;
+  id: number;
 }) {
   const data = useData();
   if (!data) return <div>Loading...</div>;
@@ -90,9 +90,7 @@ export function NominationButton({
     decrementNomination,
   } = data;
 
-  const nomination = nominations.find(
-    (nomination) => nomination.traktId === traktId,
-  );
+  const nomination = nominations.find((nomination) => nomination.id === id);
 
   if (!nomination) return <div>Loading...</div>;
 
@@ -101,7 +99,7 @@ export function NominationButton({
       <Button
         variant="default"
         disabled={nomination.count === 0}
-        onClick={() => decrementNomination(traktId)}
+        onClick={() => decrementNomination(id)}
       >
         <DiamondMinus />
       </Button>
@@ -109,7 +107,7 @@ export function NominationButton({
       <Button
         variant="default"
         disabled={nominatedSeasons >= nominatableSeasonCount}
-        onClick={() => incrementNomination(traktId)}
+        onClick={() => incrementNomination(id)}
       >
         <DiamondPlus />
       </Button>
