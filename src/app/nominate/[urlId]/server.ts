@@ -1,10 +1,10 @@
 "use server";
 
 import { db } from "@/server/db";
-import { usersTable } from "@/server/db/schema";
+import { nominationsTable, usersTable } from "@/server/db/schema";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { env } from "@/env";
 
 export async function getUser() {
@@ -61,4 +61,71 @@ async function createUser() {
     expires: new Date(Date.now() + 3600000),
   });
   return user[0];
+}
+
+export async function changeCountOfNomination(
+  seasonId: number,
+  count: number,
+  nominationRequestId: number,
+) {
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("user");
+
+  let decoded;
+  try {
+    decoded = jwt.verify(userCookie?.value ?? "", env.JWT_SECRET) as {
+      id: string;
+    };
+  } catch {}
+  if (typeof decoded?.id !== "string") return;
+
+  const nomination = await createOrGetNomination(
+    decoded.id,
+    seasonId,
+    nominationRequestId,
+  );
+  if (!nomination) return;
+
+  await db
+    .update(nominationsTable)
+    .set({
+      count: count,
+    })
+    .where(eq(nominationsTable.id, nomination.id))
+    .execute();
+}
+
+async function createOrGetNomination(
+  userId: string,
+  seasonId: number,
+  nominationRequestId: number,
+) {
+  const nomination = (
+    await db
+      .select()
+      .from(nominationsTable)
+      .where(
+        and(
+          eq(nominationsTable.id, userId),
+          eq(nominationsTable.nominatedSeasonId, seasonId),
+        ),
+      )
+      .limit(1)
+  )[0];
+
+  if (nomination) return nomination;
+
+  const createdNomination = await db
+    .insert(nominationsTable)
+    .values({
+      id: userId,
+      nominationRequestId: nominationRequestId,
+      count: 0,
+      userId,
+      state: "open",
+      nominatedSeasonId: seasonId,
+    })
+    .returning();
+
+  return createdNomination[0];
 }
