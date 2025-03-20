@@ -24,6 +24,7 @@ export default async function NomitatePage({
       nominationRequest: {
         nominatableSeasonCount: nominationRequestsTable.nominatableSeasonCount,
         state: nominationRequestsTable.state,
+        id: nominationRequestsTable.id,
       },
       season: {
         id: seasonsTable.id,
@@ -61,6 +62,7 @@ export default async function NomitatePage({
       <DataProvider
         nominatableSeasonCount={nominatableSeasonCount}
         defaultNominations={defaultNominations}
+        nominationRequestId={seasons[0].nominationRequest.id}
       >
         <div className="flex flex-col gap-4">
           <p>Nominate for Request with ID: {urlId}</p>

@@ -68,6 +68,8 @@ export async function changeCountOfNomination(
   count: number,
   nominationRequestId: number,
 ) {
+  console.log("HI", seasonId, count, nominationRequestId);
+
   const cookieStore = await cookies();
   const userCookie = cookieStore.get("user");
 

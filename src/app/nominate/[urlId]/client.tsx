@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { DiamondMinus, DiamondPlus } from "lucide-react";
+import { changeCountOfNomination } from "./server";
 
 type DataContextType = {
   nominations: {
@@ -12,8 +13,8 @@ type DataContextType = {
   }[];
   nominatedSeasons: number;
 
-  incrementNomination: (id: number) => void;
-  decrementNomination: (id: number) => void;
+  incrementNomination: (id: number) => Promise<void>;
+  decrementNomination: (id: number) => Promise<void>;
 } | null;
 
 const DataContext = createContext<DataContextType>(null);
@@ -26,6 +27,7 @@ export function DataProvider({
   children,
   nominatableSeasonCount,
   defaultNominations,
+  nominationRequestId,
 }: {
   children: React.ReactNode;
   nominatableSeasonCount: number;
@@ -33,6 +35,7 @@ export function DataProvider({
     id: number;
     count: number;
   }[];
+  nominationRequestId: number;
 }) {
   const [nominationCounts, setNominationCounts] = useState(defaultNominations);
   const nominatedSeasons = useMemo(
@@ -45,18 +48,25 @@ export function DataProvider({
       nominations: nominationCounts,
       nominatedSeasons,
 
-      incrementNomination: (id: number) => {
+      incrementNomination: async (id: number) => {
+        console.log("incrementing");
+        let count;
         setNominationCounts((prev) => {
           return prev.map((nomination) => {
             if (nomination.id !== id) return nomination;
+            count = Math.min(nomination.count + 1, nominatableSeasonCount);
+            console.log("count 1", count);
             return {
               ...nomination,
-              count: Math.min(nomination.count + 1, nominatableSeasonCount),
+              count: count,
             };
           });
         });
+        console.log("count 2", count);
+        if (count)
+          await changeCountOfNomination(id, count, nominationRequestId);
       },
-      decrementNomination: (id: number) => {
+      decrementNomination: async (id: number) => {
         setNominationCounts((prev) => {
           return prev.map((nomination) => {
             if (nomination.id !== id) return nomination;
@@ -68,7 +78,12 @@ export function DataProvider({
         });
       },
     }),
-    [nominationCounts, nominatedSeasons, nominatableSeasonCount],
+    [
+      nominationCounts,
+      nominatedSeasons,
+      nominatableSeasonCount,
+      nominationRequestId,
+    ],
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
@@ -99,7 +114,7 @@ export function NominationButton({
       <Button
         variant="default"
         disabled={nomination.count === 0}
-        onClick={() => decrementNomination(id)}
+        onClick={async () => await decrementNomination(id)}
       >
         <DiamondMinus />
       </Button>
@@ -107,7 +122,7 @@ export function NominationButton({
       <Button
         variant="default"
         disabled={nominatedSeasons >= nominatableSeasonCount}
-        onClick={() => incrementNomination(id)}
+        onClick={async () => await incrementNomination(id)}
       >
         <DiamondPlus />
       </Button>
