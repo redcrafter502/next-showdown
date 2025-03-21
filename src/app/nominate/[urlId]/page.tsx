@@ -79,8 +79,6 @@ export default async function NomitatePage({
       ),
     );
 
-  console.log(seasons);
-
   if (seasons.length === 0 || !seasons[0]) {
     return <p>No seasons found</p>;
   }
@@ -205,7 +203,7 @@ async function createOrGetNomination(
       .from(nominationsTable)
       .where(
         and(
-          eq(nominationsTable.id, userId),
+          eq(nominationsTable.userId, userId),
           eq(nominationsTable.nominatedSeasonId, seasonId),
         ),
       )
@@ -217,7 +215,6 @@ async function createOrGetNomination(
   const createdNomination = await db
     .insert(nominationsTable)
     .values({
-      id: userId,
       nominationRequestId: nominationRequestId,
       count: 0,
       userId,
