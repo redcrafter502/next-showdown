@@ -77,7 +77,8 @@ export default async function NomitatePage({
         eq(seasonsTable.id, nominationsTable.nominatedSeasonId),
         eq(nominationsTable.userId, decoded.id),
       ),
-    );
+    )
+    .orderBy(seasonsTable.id);
 
   if (seasons.length === 0 || !seasons[0]) {
     return <p>No seasons found</p>;
