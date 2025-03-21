@@ -10,7 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DataProvider, NominationButton } from "./client";
+import { Button } from "@/components/ui/button";
+import { DiamondMinus, DiamondPlus } from "lucide-react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { env } from "@/env";
+import jwt from "jsonwebtoken";
 
 export default async function NomitatePage({
   params,
@@ -18,6 +23,19 @@ export default async function NomitatePage({
   params: Promise<{ urlId: string }>;
 }) {
   const { urlId } = await params;
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("user");
+  if (!userCookie) return redirect(`/nominate/${urlId}/cookie`);
+
+  let decoded;
+  try {
+    decoded = jwt.verify(userCookie?.value ?? "", env.JWT_SECRET) as {
+      id: string;
+    };
+  } catch {}
+
+  if (typeof decoded?.id !== "string")
+    return redirect(`/nominate/${urlId}/cookie`);
 
   const seasons = await db
     .select({
@@ -59,39 +77,48 @@ export default async function NomitatePage({
 
   return (
     <UserProvider>
-      <DataProvider
-        nominatableSeasonCount={nominatableSeasonCount}
-        defaultNominations={defaultNominations}
-        nominationRequestId={seasons[0].nominationRequest.id}
-      >
-        <div className="flex flex-col gap-4">
-          <p>Nominate for Request with ID: {urlId}</p>
-          <UserNameDisplay />
-          <p>{nominatableSeasonCount}</p>
-          <div className="flex flex-wrap gap-4">
-            {seasons
-              .map((s) => s.season)
-              .map((season) => (
-                <Card key={season.id}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2.5">
-                      {season.title}
-                    </CardTitle>
-                    <CardDescription>
-                      {season.year} | Season {season.seasonNumber}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex items-center gap-4">
-                    <NominationButton
+      <div className="flex flex-col gap-4">
+        <p>Nominate for Request with ID: {urlId}</p>
+        <UserNameDisplay />
+        <p>{nominatableSeasonCount}</p>
+        <div className="flex flex-wrap gap-4">
+          {seasons
+            .map((s) => s.season)
+            .map((season) => (
+              <Card key={season.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2.5">
+                    {season.title}
+                  </CardTitle>
+                  <CardDescription>
+                    {season.year} | Season {season.seasonNumber}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex items-center gap-4">
+                  {/*<NominationButton
                       id={season.id}
                       nominatableSeasonCount={nominatableSeasonCount}
-                    />
-                  </CardContent>
-                </Card>
-              ))}
-          </div>
+                    />*/}
+                  <Button
+                    variant="default"
+                    //disabled={nomination.count === 0}
+                    //onClick={async () => await decrementNomination(id)}
+                  >
+                    <DiamondMinus />
+                  </Button>
+                  {0}
+                  <Button
+                    variant="default"
+                    //disabled={nominatedSeasons >= nominatableSeasonCount}
+                    //onClick={async () => await incrementNomination(id)}
+                  >
+                    <DiamondPlus />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
         </div>
-      </DataProvider>
+      </div>
     </UserProvider>
   );
 }
