@@ -121,7 +121,6 @@ export default async function NomitatePage({
                     disabled={nominationCount === 0}
                     onClick={async () => {
                       "use server";
-                      console.log("in server component");
                       await changeCountOfNominationLocal(
                         season.season.id,
                         Math.max(nominationCount - 1, 0),
@@ -138,7 +137,6 @@ export default async function NomitatePage({
                     disabled={nominatedSeasonsCount >= nominatableSeasonCount}
                     onClick={async () => {
                       "use server";
-                      console.log("in server component");
                       await changeCountOfNominationLocal(
                         season.season.id,
                         Math.min(nominationCount + 1, nominatableSeasonCount),
@@ -164,8 +162,6 @@ async function changeCountOfNominationLocal(
   count: number,
   nominationRequestId: number,
 ) {
-  console.log("HI", seasonId, count, nominationRequestId);
-
   const cookieStore = await cookies();
   const userCookie = cookieStore.get("user");
 
