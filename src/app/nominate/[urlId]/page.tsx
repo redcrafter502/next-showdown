@@ -4,7 +4,6 @@ import UserNameDisplay from "./userNameDisplay";
 import {
   nominationRequestsTable,
   nominationsTable,
-  nominationState,
   seasonsTable,
 } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm/expressions";
@@ -21,7 +20,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "@/env";
 import jwt from "jsonwebtoken";
-import { changeCountOfNomination } from "./server";
 import { revalidatePath } from "next/cache";
 
 export default async function NomitatePage({
@@ -80,7 +78,6 @@ export default async function NomitatePage({
         eq(nominationsTable.userId, decoded.id),
       ),
     );
-  //.where(eq(nominationRequestsTable.urlId, urlId));
 
   console.log(seasons);
 
@@ -145,7 +142,7 @@ export default async function NomitatePage({
                       console.log("in server component");
                       await changeCountOfNominationLocal(
                         season.season.id,
-                        Math.max(nominationCount + 1, nominatableSeasonCount),
+                        Math.min(nominationCount + 1, nominatableSeasonCount),
                         season.nominationRequest.id,
                       );
                       revalidatePath(`/nominate/${urlId}`);
