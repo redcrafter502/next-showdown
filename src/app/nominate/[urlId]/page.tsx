@@ -100,7 +100,9 @@ export default async function NomitatePage({
       <div className="flex flex-col gap-4">
         <p>Nominate for Request with ID: {urlId}</p>
         <UserNameDisplay />
-        <p>{nominatableSeasonCount}</p>
+        <p>
+          {nominatedSeasonsCount} / {nominatableSeasonCount}
+        </p>
         <div className="flex flex-wrap gap-4">
           {seasons.map((season) => {
             const nominationCount = season.nomination?.count ?? 0;
