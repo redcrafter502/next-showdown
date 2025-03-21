@@ -1,17 +1,17 @@
-"use client";
+import { db } from "@/server/db";
+import { usersTable } from "@/server/db/schema";
+import { eq } from "drizzle-orm/expressions";
 
-import { useUser } from "./user-provider";
+export default async function UserNameDisplay({ userId }: { userId: string }) {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+    .limit(1);
 
-export default function UserNameDisplay() {
-  const { name, loading, error } = useUser();
+  if (user.length === 0) return <p>User: Unknown</p>;
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  const name = user[0]?.name;
 
   return <p>User: {name}</p>;
 }

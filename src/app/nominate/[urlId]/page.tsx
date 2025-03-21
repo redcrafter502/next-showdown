@@ -1,5 +1,4 @@
 import { db } from "@/server/db";
-import UserProvider from "./user-provider";
 import UserNameDisplay from "./userNameDisplay";
 import {
   nominationRequestsTable,
@@ -96,67 +95,65 @@ export default async function NomitatePage({
     .reduce((acc, season) => acc + (season.nomination?.count ?? 0), 0);
 
   return (
-    <UserProvider>
-      <div className="flex flex-col gap-4">
-        <p>Nominate for Request with ID: {urlId}</p>
-        <UserNameDisplay />
-        <p>
-          {nominatedSeasonsCount} / {nominatableSeasonCount}
-        </p>
-        <div className="flex flex-wrap gap-4">
-          {seasons.map((season) => {
-            const nominationCount = season.nomination?.count ?? 0;
+    <div className="flex flex-col gap-4">
+      <p>Nominate for Request with ID: {urlId}</p>
+      <UserNameDisplay userId={decoded.id} />
+      <p>
+        {nominatedSeasonsCount} / {nominatableSeasonCount}
+      </p>
+      <div className="flex flex-wrap gap-4">
+        {seasons.map((season) => {
+          const nominationCount = season.nomination?.count ?? 0;
 
-            return (
-              <Card key={season.season.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2.5">
-                    {season.season.title}
-                  </CardTitle>
-                  <CardDescription>
-                    {season.season.year} | Season {season.season.seasonNumber}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex items-center gap-4">
-                  <Button
-                    variant="default"
-                    disabled={nominationCount === 0}
-                    onClick={async () => {
-                      "use server";
-                      await changeCountOfNominationLocal(
-                        season.season.id,
-                        Math.max(nominationCount - 1, 0),
-                        season.nominationRequest.id,
-                      );
-                      revalidatePath(`/nominate/${urlId}`);
-                    }}
-                  >
-                    <DiamondMinus />
-                  </Button>
-                  {nominationCount}
-                  <Button
-                    variant="default"
-                    disabled={nominatedSeasonsCount >= nominatableSeasonCount}
-                    onClick={async () => {
-                      "use server";
-                      // TODO: proper server-side validation of nominatable season count
-                      await changeCountOfNominationLocal(
-                        season.season.id,
-                        Math.min(nominationCount + 1, nominatableSeasonCount),
-                        season.nominationRequest.id,
-                      );
-                      revalidatePath(`/nominate/${urlId}`);
-                    }}
-                  >
-                    <DiamondPlus />
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+          return (
+            <Card key={season.season.id}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2.5">
+                  {season.season.title}
+                </CardTitle>
+                <CardDescription>
+                  {season.season.year} | Season {season.season.seasonNumber}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex items-center gap-4">
+                <Button
+                  variant="default"
+                  disabled={nominationCount === 0}
+                  onClick={async () => {
+                    "use server";
+                    await changeCountOfNominationLocal(
+                      season.season.id,
+                      Math.max(nominationCount - 1, 0),
+                      season.nominationRequest.id,
+                    );
+                    revalidatePath(`/nominate/${urlId}`);
+                  }}
+                >
+                  <DiamondMinus />
+                </Button>
+                {nominationCount}
+                <Button
+                  variant="default"
+                  disabled={nominatedSeasonsCount >= nominatableSeasonCount}
+                  onClick={async () => {
+                    "use server";
+                    // TODO: proper server-side validation of nominatable season count
+                    await changeCountOfNominationLocal(
+                      season.season.id,
+                      Math.min(nominationCount + 1, nominatableSeasonCount),
+                      season.nominationRequest.id,
+                    );
+                    revalidatePath(`/nominate/${urlId}`);
+                  }}
+                >
+                  <DiamondPlus />
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
-    </UserProvider>
+    </div>
   );
 }
 
