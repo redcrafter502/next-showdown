@@ -1,8 +1,13 @@
 import { db } from "@/server/db";
 import UserProvider from "./user-provider";
 import UserNameDisplay from "./userNameDisplay";
-import { nominationRequestsTable, seasonsTable } from "@/server/db/schema";
-import { eq } from "drizzle-orm/expressions";
+import {
+  nominationRequestsTable,
+  nominationsTable,
+  nominationState,
+  seasonsTable,
+} from "@/server/db/schema";
+import { and, eq } from "drizzle-orm/expressions";
 import {
   Card,
   CardContent,
@@ -16,6 +21,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "@/env";
 import jwt from "jsonwebtoken";
+import { changeCountOfNomination } from "./server";
+import { revalidatePath } from "next/cache";
 
 export default async function NomitatePage({
   params,
@@ -39,6 +46,11 @@ export default async function NomitatePage({
 
   const seasons = await db
     .select({
+      nomination: {
+        id: nominationsTable.id,
+        count: nominationsTable.count,
+        nominatedSeasonId: nominationsTable.nominatedSeasonId,
+      },
       nominationRequest: {
         nominatableSeasonCount: nominationRequestsTable.nominatableSeasonCount,
         state: nominationRequestsTable.state,
@@ -55,9 +67,22 @@ export default async function NomitatePage({
     .from(seasonsTable)
     .innerJoin(
       nominationRequestsTable,
-      eq(seasonsTable.nominationRequestId, nominationRequestsTable.id),
+      and(
+        eq(nominationRequestsTable.urlId, urlId),
+        eq(seasonsTable.nominationRequestId, nominationRequestsTable.id),
+      ),
     )
-    .where(eq(nominationRequestsTable.urlId, urlId));
+    .leftJoin(
+      nominationsTable,
+      and(
+        eq(nominationRequestsTable.id, nominationsTable.nominationRequestId),
+        eq(seasonsTable.id, nominationsTable.nominatedSeasonId),
+        eq(nominationsTable.userId, decoded.id),
+      ),
+    );
+  //.where(eq(nominationRequestsTable.urlId, urlId));
+
+  console.log(seasons);
 
   if (seasons.length === 0 || !seasons[0]) {
     return <p>No seasons found</p>;
@@ -70,10 +95,9 @@ export default async function NomitatePage({
   const nominatableSeasonCount =
     seasons[0].nominationRequest.nominatableSeasonCount;
 
-  const defaultNominations = seasons.map((season) => ({
-    id: season.season.id,
-    count: 0,
-  }));
+  const nominatedSeasonsCount = seasons
+    .filter((season) => season.nomination?.nominatedSeasonId)
+    .reduce((acc, season) => acc + (season.nomination?.count ?? 0), 0);
 
   return (
     <UserProvider>
@@ -82,43 +106,128 @@ export default async function NomitatePage({
         <UserNameDisplay />
         <p>{nominatableSeasonCount}</p>
         <div className="flex flex-wrap gap-4">
-          {seasons
-            .map((s) => s.season)
-            .map((season) => (
-              <Card key={season.id}>
+          {seasons.map((season) => {
+            const nominationCount = season.nomination?.count ?? 0;
+
+            return (
+              <Card key={season.season.id}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2.5">
-                    {season.title}
+                    {season.season.title}
                   </CardTitle>
                   <CardDescription>
-                    {season.year} | Season {season.seasonNumber}
+                    {season.season.year} | Season {season.season.seasonNumber}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4">
-                  {/*<NominationButton
-                      id={season.id}
-                      nominatableSeasonCount={nominatableSeasonCount}
-                    />*/}
                   <Button
                     variant="default"
-                    //disabled={nomination.count === 0}
-                    //onClick={async () => await decrementNomination(id)}
+                    disabled={nominationCount === 0}
+                    onClick={async () => {
+                      "use server";
+                      console.log("in server component");
+                      await changeCountOfNominationLocal(
+                        season.season.id,
+                        Math.max(nominationCount - 1, 0),
+                        season.nominationRequest.id,
+                      );
+                      revalidatePath(`/nominate/${urlId}`);
+                    }}
                   >
                     <DiamondMinus />
                   </Button>
-                  {0}
+                  {nominationCount}
                   <Button
                     variant="default"
-                    //disabled={nominatedSeasons >= nominatableSeasonCount}
-                    //onClick={async () => await incrementNomination(id)}
+                    disabled={nominatedSeasonsCount >= nominatableSeasonCount}
+                    onClick={async () => {
+                      "use server";
+                      console.log("in server component");
+                      await changeCountOfNominationLocal(
+                        season.season.id,
+                        Math.max(nominationCount + 1, nominatableSeasonCount),
+                        season.nominationRequest.id,
+                      );
+                      revalidatePath(`/nominate/${urlId}`);
+                    }}
                   >
                     <DiamondPlus />
                   </Button>
                 </CardContent>
               </Card>
-            ))}
+            );
+          })}
         </div>
       </div>
     </UserProvider>
   );
+}
+
+async function changeCountOfNominationLocal(
+  seasonId: number,
+  count: number,
+  nominationRequestId: number,
+) {
+  console.log("HI", seasonId, count, nominationRequestId);
+
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("user");
+
+  let decoded;
+  try {
+    decoded = jwt.verify(userCookie?.value ?? "", env.JWT_SECRET) as {
+      id: string;
+    };
+  } catch {}
+  if (typeof decoded?.id !== "string") return;
+
+  const nomination = await createOrGetNomination(
+    decoded.id,
+    seasonId,
+    nominationRequestId,
+  );
+  if (!nomination) return;
+
+  await db
+    .update(nominationsTable)
+    .set({
+      count: count,
+    })
+    .where(eq(nominationsTable.id, nomination.id))
+    .execute();
+}
+
+async function createOrGetNomination(
+  userId: string,
+  seasonId: number,
+  nominationRequestId: number,
+) {
+  const nomination = (
+    await db
+      .select()
+      .from(nominationsTable)
+      .where(
+        and(
+          eq(nominationsTable.id, userId),
+          eq(nominationsTable.nominatedSeasonId, seasonId),
+        ),
+      )
+      .limit(1)
+  )[0];
+
+  if (nomination) return nomination;
+
+  const createdNomination = await db
+    .insert(nominationsTable)
+    .values({
+      id: userId,
+      nominationRequestId: nominationRequestId,
+      count: 0,
+      userId,
+      state: "open",
+      nominatedSeasonId: seasonId,
+    })
+    .returning();
+
+  return createdNomination[0];
 }
