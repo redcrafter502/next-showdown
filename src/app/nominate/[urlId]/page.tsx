@@ -139,6 +139,7 @@ export default async function NomitatePage({
                     disabled={nominatedSeasonsCount >= nominatableSeasonCount}
                     onClick={async () => {
                       "use server";
+                      // TODO: proper server-side validation of nominatable season count
                       await changeCountOfNominationLocal(
                         season.season.id,
                         Math.min(nominationCount + 1, nominatableSeasonCount),
