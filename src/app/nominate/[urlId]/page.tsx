@@ -20,6 +20,7 @@ import { redirect } from "next/navigation";
 import { env } from "@/env";
 import jwt from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
+import { USER_COOKIE_NAME } from "@/lib/constants";
 
 export default async function NomitatePage({
   params,
@@ -28,7 +29,7 @@ export default async function NomitatePage({
 }) {
   const { urlId } = await params;
   const cookieStore = await cookies();
-  const userCookie = cookieStore.get("user");
+  const userCookie = cookieStore.get(USER_COOKIE_NAME);
   if (!userCookie) return redirect(`/nominate/${urlId}/cookie`);
 
   let decoded;
@@ -163,7 +164,7 @@ async function changeCountOfNominationLocal(
   nominationRequestId: number,
 ) {
   const cookieStore = await cookies();
-  const userCookie = cookieStore.get("user");
+  const userCookie = cookieStore.get(USER_COOKIE_NAME);
 
   let decoded;
   try {

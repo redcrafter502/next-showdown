@@ -5,6 +5,11 @@ import { env } from "@/env.js";
 import { eq } from "drizzle-orm/expressions";
 import { db } from "@/server/db";
 import { usersTable } from "@/server/db/schema";
+import {
+  ONE_DAY_IN_MILLISECONDS,
+  ONE_DAY_IN_SECONDS,
+  USER_COOKIE_NAME,
+} from "@/lib/constants";
 
 export async function GET(
   _request: Request,
@@ -13,7 +18,7 @@ export async function GET(
   const { urlId } = await params;
 
   const cookieStore = await cookies();
-  const userCookie = cookieStore.get("user");
+  const userCookie = cookieStore.get(USER_COOKIE_NAME);
 
   let decoded;
   try {
@@ -26,11 +31,11 @@ export async function GET(
   if (!user) return redirect(`/nominate/${urlId}`);
 
   const newToken = jwt.sign({ id: user.id }, env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: ONE_DAY_IN_SECONDS,
   });
-  cookieStore.set("user", newToken, {
+  cookieStore.set(USER_COOKIE_NAME, newToken, {
     httpOnly: true,
-    expires: new Date(Date.now() + 3600000),
+    expires: new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
   });
 
   return redirect(`/nominate/${urlId}`);
