@@ -1,9 +1,9 @@
 import { db } from "@/server/db";
-import UserNameDisplay from "./userNameDisplay";
 import {
   nominationRequestsTable,
   nominationsTable,
   seasonsTable,
+  usersTable,
 } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm/expressions";
 import {
@@ -42,7 +42,7 @@ export default async function NomitatePage({
   if (typeof decoded?.id !== "string")
     return redirect(`/nominate/${urlId}/cookie`);
 
-  const seasons = await db
+  const seasonsPromise = db
     .select({
       nomination: {
         id: nominationsTable.id,
@@ -80,6 +80,14 @@ export default async function NomitatePage({
     )
     .orderBy(seasonsTable.id);
 
+  const userPromise = db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, decoded.id))
+    .limit(1);
+
+  const [seasons, user] = await Promise.all([seasonsPromise, userPromise]);
+
   if (seasons.length === 0 || !seasons[0]) {
     return <p>No seasons found</p>;
   }
@@ -98,7 +106,7 @@ export default async function NomitatePage({
   return (
     <div className="flex flex-col gap-4">
       <p>Nominate for Request with ID: {urlId}</p>
-      <UserNameDisplay userId={decoded.id} />
+      <UserNameDisplay user={user} />
       <p>
         {nominatedSeasonsCount} / {nominatableSeasonCount}
       </p>
@@ -156,6 +164,14 @@ export default async function NomitatePage({
       </div>
     </div>
   );
+}
+
+async function UserNameDisplay({ user }: { user: { name: string }[] }) {
+  if (user.length === 0) return <p>User: Unknown</p>;
+
+  const name = user[0]?.name;
+
+  return <p>User: {name}</p>;
 }
 
 async function changeCountOfNominationLocal(
