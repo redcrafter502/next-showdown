@@ -104,12 +104,12 @@ export default async function NomitatePage({
     .reduce((acc, season) => acc + (season.nomination?.count ?? 0), 0);
 
   return (
-    <div className="flex flex-col gap-4">
-      <p>Nominate for Request with ID: {urlId}</p>
-      <UserNameDisplay user={user} />
-      <p>
-        {nominatedSeasonsCount} / {nominatableSeasonCount}
-      </p>
+    <div className="flex flex-col items-center gap-4">
+      <h1 className="mt-2 text-2xl">Welcome, {user[0]?.name}!</h1>
+      <h2 className="text-xl">
+        You have nominated {nominatedSeasonsCount} / {nominatableSeasonCount}{" "}
+        Seasons!
+      </h2>
       <div className="flex flex-wrap gap-4">
         {seasons.map((season) => {
           const nominationCount = season.nomination?.count ?? 0;
@@ -164,14 +164,6 @@ export default async function NomitatePage({
       </div>
     </div>
   );
-}
-
-async function UserNameDisplay({ user }: { user: { name: string }[] }) {
-  if (user.length === 0) return <p>User: Unknown</p>;
-
-  const name = user[0]?.name;
-
-  return <p>User: {name}</p>;
 }
 
 async function changeCountOfNominationLocal(
