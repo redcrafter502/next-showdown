@@ -135,9 +135,9 @@ export default async function NomitatePage({
                   disabled={nominationCount === 0}
                   onClick={async () => {
                     "use server";
-                    await changeCountOfNominationLocal(
+                    await decreaseCountOfNomination(
                       season.season.id,
-                      Math.max(nominationCount - 1, 0),
+                      nominationCount,
                       season.nominationRequest.id,
                     );
                     revalidatePath(`/nominate/${urlId}`);
@@ -151,10 +151,9 @@ export default async function NomitatePage({
                   disabled={nominatedSeasonsCount >= nominatableSeasonCount}
                   onClick={async () => {
                     "use server";
-                    // TODO: proper server-side validation of nominatable season count
-                    await changeCountOfNominationLocal(
+                    await increaseCountOfNomination(
                       season.season.id,
-                      Math.min(nominationCount + 1, nominatableSeasonCount),
+                      nominationCount,
                       season.nominationRequest.id,
                     );
                     revalidatePath(`/nominate/${urlId}`);
@@ -189,7 +188,42 @@ function getBackgroundColor(count: number, maxCount: number) {
   return backgroundColors[index];
 }
 
-async function changeCountOfNominationLocal(
+async function increaseCountOfNomination(
+  seasonId: number,
+  nominationCount: number,
+  nominationRequestId: number,
+) {
+  const nominationRequest = await db
+    .select({
+      nominatableSeasonCount: nominationRequestsTable.nominatableSeasonCount,
+    })
+    .from(nominationRequestsTable)
+    .where(eq(nominationRequestsTable.id, nominationRequestId))
+    .limit(1);
+
+  if (!nominationRequest[0]) return;
+  const nominatableSeasonCount = nominationRequest[0].nominatableSeasonCount;
+
+  await changeCountOfNomination(
+    seasonId,
+    Math.min(nominationCount + 1, nominatableSeasonCount),
+    nominationRequestId,
+  );
+}
+
+async function decreaseCountOfNomination(
+  seasonId: number,
+  nominationCount: number,
+  nominationRequestId: number,
+) {
+  await changeCountOfNomination(
+    seasonId,
+    Math.max(nominationCount - 1, 0),
+    nominationRequestId,
+  );
+}
+
+async function changeCountOfNomination(
   seasonId: number,
   count: number,
   nominationRequestId: number,
