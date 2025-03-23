@@ -114,8 +114,13 @@ export default async function NomitatePage({
         {seasons.map((season) => {
           const nominationCount = season.nomination?.count ?? 0;
 
+          const backgroundColor = getBackgroundColor(
+            nominationCount,
+            nominatableSeasonCount,
+          );
+
           return (
-            <Card key={season.season.id}>
+            <Card key={season.season.id} className={backgroundColor}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2.5">
                   {season.season.title}
@@ -164,6 +169,24 @@ export default async function NomitatePage({
       </div>
     </div>
   );
+}
+
+const backgroundColors = [
+  "bg-green-950",
+  "bg-green-900",
+  "bg-green-800",
+  "bg-green-700",
+];
+
+function getBackgroundColor(count: number, maxCount: number) {
+  if (count === 0) return "";
+  if (count === 1) return backgroundColors[0];
+  const percentage = (count - 1) / (maxCount - 1);
+  const index = Math.min(
+    Math.floor(percentage * (backgroundColors.length - 1)),
+    backgroundColors.length - 1,
+  );
+  return backgroundColors[index];
 }
 
 async function changeCountOfNominationLocal(
