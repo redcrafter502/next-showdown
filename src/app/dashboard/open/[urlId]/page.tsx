@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UrlCopyButton } from "./client";
+import { env } from "@/env";
 
 export default async function OpenStatePage({
   params,
@@ -39,7 +40,9 @@ export default async function OpenStatePage({
   if (!(nominationRequest[0]?.state === "open"))
     return redirect(`/dashboard/closed/${urlId}`);
 
-  const url = nominationRequest[0].urlId;
+  const url =
+    new URL(env.NEXT_PUBLIC_CLIENT_URL) +
+    `dashboard/open/${nominationRequest[0].urlId}`;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
