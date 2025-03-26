@@ -3,6 +3,13 @@ import { nominationRequestsTable } from "@/server/db/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/server/auth";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 export default async function OpenStatePage({
   params,
@@ -31,9 +38,18 @@ export default async function OpenStatePage({
     return redirect(`/dashboard/closed/${urlId}`);
 
   return (
-    <div>
-      <p>This Nomination Request is open: UrlId: {urlId}</p>
-      <p>{nominationRequest[0].name}</p>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <Card>
+        <CardHeader>
+          <CardTitle>{nominationRequest[0].name}</CardTitle>
+          <CardDescription>
+            {nominationRequest[0].createdAt.toLocaleDateString()}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>This Nomination Request is open: UrlId: {urlId}</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
