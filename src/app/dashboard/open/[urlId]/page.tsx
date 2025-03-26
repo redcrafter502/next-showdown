@@ -9,10 +9,13 @@ import {
   CardContent,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { UrlCopyButton } from "./client";
+import { CloseNominationRequestButton, UrlCopyButton } from "./client";
 import { env } from "@/env";
+import { Button } from "@/components/ui/button";
+import { revalidatePath } from "next/cache";
 
 export default async function OpenStatePage({
   params,
@@ -63,7 +66,40 @@ export default async function OpenStatePage({
             <UrlCopyButton url={url} />
           </div>
         </CardContent>
+        <CardFooter>
+          <form
+            action={async () => {
+              "use server";
+              await closeNominationRequest(urlId);
+            }}
+            className="w-full"
+          >
+            <CloseNominationRequestButton />
+          </form>
+        </CardFooter>
       </Card>
     </div>
   );
+}
+
+async function closeNominationRequest(urlId: string) {
+  const session = await auth();
+
+  if (!session?.user) {
+    await signIn();
+    return;
+  }
+
+  await db
+    .update(nominationRequestsTable)
+    .set({
+      state: "closed",
+    })
+    .where(
+      and(
+        eq(nominationRequestsTable.urlId, urlId),
+        eq(nominationRequestsTable.traktUserId, session.user.id),
+      ),
+    );
+  revalidatePath("/");
 }
