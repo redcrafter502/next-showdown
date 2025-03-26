@@ -10,6 +10,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { UrlCopyButton } from "./client";
 
 export default async function OpenStatePage({
   params,
@@ -37,6 +39,8 @@ export default async function OpenStatePage({
   if (!(nominationRequest[0]?.state === "open"))
     return redirect(`/dashboard/closed/${urlId}`);
 
+  const url = nominationRequest[0].urlId;
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <Card>
@@ -46,8 +50,15 @@ export default async function OpenStatePage({
             {nominationRequest[0].createdAt.toLocaleDateString()}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <p>This Nomination Request is open: UrlId: {urlId}</p>
+        <CardContent className="flex flex-col gap-4">
+          <p>
+            This is an open nomination request. Pleaselj share the link below to
+            allow people to nominate seasons.
+          </p>
+          <div className="flex w-full gap-4">
+            <Input disabled value={url} />
+            <UrlCopyButton url={url} />
+          </div>
         </CardContent>
       </Card>
     </div>
