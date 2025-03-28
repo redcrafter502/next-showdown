@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export function UrlCopyButton({ url }: { url: string }) {
   async function copyUrlToClipboard() {
     await navigator.clipboard.writeText(url).catch((error) => {
-      toast.error("Failed to copy URL to clipboard:", error);
+      toast.error("Failed to copy URL to clipboard: " + error);
     });
     toast.success("URL copied to clipboard");
   }
