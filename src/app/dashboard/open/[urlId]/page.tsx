@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { CloseNominationRequestButton, UrlCopyButton } from "./client";
 import { env } from "@/env";
-import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
 
 export default async function OpenStatePage({
@@ -43,9 +42,10 @@ export default async function OpenStatePage({
   if (!(nominationRequest[0]?.state === "open"))
     return redirect(`/dashboard/closed/${urlId}`);
 
-  const url =
-    new URL(env.NEXT_PUBLIC_CLIENT_URL) +
-    `dashboard/open/${nominationRequest[0].urlId}`;
+  const url = new URL(
+    `dashboard/open/${nominationRequest[0].urlId}`,
+    env.NEXT_PUBLIC_CLIENT_URL,
+  ).href;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
