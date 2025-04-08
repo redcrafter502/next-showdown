@@ -7,6 +7,7 @@
 - [ ] new user id with every new login
 - [ ] add env to use mock data instead of trakt api
 - [ ] use arktype for env validation
+- [ ] sharing link using web share api
 
 # Create T3 App
 
