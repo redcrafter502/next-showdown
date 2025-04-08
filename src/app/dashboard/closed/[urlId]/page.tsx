@@ -66,9 +66,10 @@ export default async function ClosedStatePage({
   });
 
   return (
-    <div>
-      This Nomination Request is closed: UrlId: {urlId} It has the name:{" "}
-      {nominationRequest[0].nominationRequests.name}
+    <div className="mt-4 flex w-full flex-col items-center gap-4">
+      <h1 className="text-2xl">
+        Nomination Request: {nominationRequest[0].nominationRequests.name}
+      </h1>
       <div className="flex flex-wrap gap-4">
         {nominations.map((n, index) => (
           <Nomination key={index} nominations={n} index={index} />

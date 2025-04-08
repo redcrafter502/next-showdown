@@ -43,7 +43,7 @@ export default async function OpenStatePage({
     return redirect(`/dashboard/closed/${urlId}`);
 
   const url = new URL(
-    `dashboard/open/${nominationRequest[0].urlId}`,
+    `nominate/${nominationRequest[0].urlId}`,
     env.NEXT_PUBLIC_CLIENT_URL,
   ).href;
 
