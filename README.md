@@ -2,6 +2,10 @@
 
 - [ ] No random order changes when selecting or discarding a nomination
 - [ ] Using trakt refresh tokens
+- [ ] better error handling
+- [ ] pagination on dashboard page
+- [ ] new user id with every new login
+- [ ] add env to use mock data instead of trakt api
 
 # Create T3 App
 
