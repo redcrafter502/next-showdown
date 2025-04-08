@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENT_URL: "http://localhost:3000"
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: next-showdown
+    environment:
+      - DATABASE_URL=database_url_goes_here
+      - JWT_SECRET=jwt_secret_goes_here
+      - AUTH_SECRET=auth_secret_goes_here
+      - AUTH_TRAKT_ID=trakt_id_goes_here
+      - AUTH_TRAKT_SECRET=trakt_secret_goes_here

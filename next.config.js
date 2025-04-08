@@ -6,9 +6,9 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-    images: {
-        /* remotePatterns doesn't work for some reason */
-        /*remotePatterns: [
+  images: {
+    /* remotePatterns doesn't work for some reason */
+    /*remotePatterns: [
             {
                 protocol: "https",
                 hostname: "secure.gravatar.com",
@@ -17,8 +17,9 @@ const config = {
                 search: "*",
             }
         ],*/
-        domains: ["secure.gravatar.com"],
-    }
+    domains: ["secure.gravatar.com"],
+  },
+  output: "standalone",
 };
 
 export default config;
