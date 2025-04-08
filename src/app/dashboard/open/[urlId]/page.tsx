@@ -58,7 +58,7 @@ export default async function OpenStatePage({
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p>
-            This is an open nomination request. Pleaselj share the link below to
+            This is an open nomination request. Please share the link below to
             allow people to nominate seasons.
           </p>
           <div className="flex w-full gap-4">
