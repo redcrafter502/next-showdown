@@ -1,5 +1,4 @@
 import { auth, signIn } from "@/server/auth";
-//import { env } from "@/env";
 import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/server/db";
@@ -22,8 +21,6 @@ export default function DashboardPage() {
       <Suspense fallback={<LoadingSpinner />}>
         <MyNominationRequests />
       </Suspense>
-      {/*<DisplayList listName="Test" accessToken={session.accessToken} />*/}
-      {/*<DisplayLists accessToken={session.accessToken} />*/}
     </div>
   );
 }
@@ -41,8 +38,6 @@ async function MyNominationRequests() {
     .from(nominationRequestsTable)
     .where(eq(nominationRequestsTable.traktUserId, userId))
     .orderBy(desc(nominationRequestsTable.updatedAt));
-
-  console.log(nominationRequests);
 
   return (
     <div className="flex flex-wrap gap-4">
@@ -83,68 +78,3 @@ async function MyNominationRequests() {
     </div>
   );
 }
-
-/*async function DisplayList({
-  listName,
-  accessToken,
-}: {
-  listName: string;
-  accessToken?: string;
-}) {
-  if (!accessToken) {
-    return <div>There was an error getting the access Token!</div>;
-  }
-
-  const ho = await fetch(
-    `https://api.trakt.tv/users/me/lists/${listName}/items/season`,
-    {
-      method: "GET",
-      headers: {
-        "trakt-api-version": "2",
-        "trakt-api-key": env.AUTH_TRAKT_ID,
-        Authorization: accessToken,
-      },
-    },
-  ).catch((err) => {
-    console.log("Fetch error", err);
-  });
-
-  console.log(ho);
-  const data: unknown = await ho?.json();
-  console.log(data);
-
-  return (
-    <div>
-      List ({listName}):
-      {JSON.stringify(data)}
-    </div>
-  );
-}*/
-
-/*async function DisplayLists({ accessToken }: { accessToken?: string }) {
-  if (!accessToken) {
-    return <div>There was an error getting the Access Token!</div>;
-  }
-
-  const ho = await fetch(`https://api.trakt.tv/users/me/lists/`, {
-    method: "GET",
-    headers: {
-      "trakt-api-version": "2",
-      "trakt-api-key": env.AUTH_TRAKT_ID,
-      Authorization: accessToken,
-    },
-  }).catch((err) => {
-    console.log("Fetch error", err);
-  });
-
-  console.log(ho);
-  const data: unknown = await ho?.json();
-  console.log(data);
-
-  return (
-    <div>
-      Your lists:
-      {JSON.stringify(data)}
-    </div>
-  );
-  }*/

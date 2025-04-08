@@ -1,5 +1,5 @@
 import { auth, signIn } from "@/server/auth";
-//import { env } from "@/env";
+import { env } from "@/env.js";
 import {
   Card,
   CardContent,
@@ -18,6 +18,7 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { nominationRequestsTable, seasonsTable } from "@/server/db/schema";
 import { redirect } from "next/navigation";
+import { type } from "arktype";
 
 const createNominationFormSchema = z.object({
   name: z.string(),
@@ -52,6 +53,7 @@ export default async function NewPage() {
       formValues.data.list,
       session.accessToken,
     );
+    if (!seasons) return;
 
     const nominationRequest = await db
       .insert(nominationRequestsTable)
@@ -119,6 +121,7 @@ async function List({ accessToken }: { accessToken?: string }) {
   }
 
   const lists = await getListsForUser(accessToken);
+  if (!lists) return <div>There was an error getting the Lists!</div>;
 
   return (
     <div className="flex flex-col gap-4">
@@ -159,8 +162,37 @@ async function List({ accessToken }: { accessToken?: string }) {
   );
 }
 
-async function getListsForUser(_accessToken: string) {
-  /*const resp = await fetch(`https://api.trakt.tv/users/me/lists/`, {
+const ListType = type(
+  {
+    name: "string",
+    description: "string",
+    privacy: "string",
+    share_link: "string",
+    type: "string",
+    display_numbers: "boolean",
+    allow_comments: "boolean",
+    sort_by: "string",
+    sort_how: "string",
+    created_at: "string",
+    updated_at: "string",
+    item_count: "number",
+    comment_count: "number",
+    likes: "number",
+    ids: { trakt: "number", slug: "string" },
+    user: {
+      username: "string",
+      private: "boolean",
+      name: "string",
+      vip: "boolean",
+      vip_ep: "boolean",
+      ids: { slug: "string" },
+    },
+  },
+  "[]",
+);
+
+async function getListsForUser(accessToken: string) {
+  const resp = await fetch(`https://api.trakt.tv/users/me/lists/`, {
     method: "GET",
     headers: {
       "trakt-api-version": "2",
@@ -172,9 +204,11 @@ async function getListsForUser(_accessToken: string) {
   });
 
   const data: unknown = await resp?.json();
-  return data;*/
+  const validatedData = ListType(data);
+  if (validatedData instanceof type.errors) return;
+  return validatedData;
   // Mock data
-  return [
+  /*return [
     {
       name: "Test",
       description: "",
@@ -226,12 +260,43 @@ async function getListsForUser(_accessToken: string) {
         ids: { slug: "redcrafter502" },
       },
     },
-  ];
+  ];*/
 }
 
-/* eslint-disable */
-async function getSeasonsForList(_listName: string, _accessToken: string) {
-  /*const resp = await fetch(
+const SeasonsType = type(
+  {
+    rank: "number",
+    id: "number",
+    listed_at: "string",
+    "notes?": "string | null",
+    type: "string",
+    season: {
+      number: "number",
+      ids: {
+        trakt: "number",
+        tvdb: "number",
+        tmdb: "number",
+        "tvrage?": "number | null",
+      },
+    },
+    show: {
+      title: "string",
+      year: "number",
+      ids: {
+        trakt: "number",
+        slug: "string",
+        tvdb: "number",
+        imdb: "string",
+        tmdb: "number",
+        "tvrage?": "number | null",
+      },
+    },
+  },
+  "[]",
+);
+
+async function getSeasonsForList(listName: string, accessToken: string) {
+  const resp = await fetch(
     `https://api.trakt.tv/users/me/lists/${listName}/items/season`,
     {
       method: "GET",
@@ -246,10 +311,15 @@ async function getSeasonsForList(_listName: string, _accessToken: string) {
   });
 
   const data: unknown = await resp?.json();
-  return data;*/
+  const validatedData = SeasonsType(data);
 
+  if (validatedData instanceof type.errors) {
+    console.log(validatedData.summary);
+    return;
+  }
+  return validatedData;
   // Mock Data
-  return [
+  /*return [
     {
       rank: 1,
       id: 1169288812,
@@ -388,6 +458,5 @@ async function getSeasonsForList(_listName: string, _accessToken: string) {
         },
       },
     },
-  ];
+  ];*/
 }
-/* eslint-enable */
