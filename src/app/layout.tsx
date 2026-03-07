@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Next Showdown",
   description: "Easily choose your next show to watch!",
   // TODO: favicon
-  //icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/icon.png" }],
 };
 
 export default function RootLayout({

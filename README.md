@@ -8,6 +8,7 @@
 - [ ] add env to use mock data instead of trakt api
 - [ ] use arktype for env validation
 - [ ] sharing link using web share api
+- [ ] better home page
 
 # Create T3 App
 
