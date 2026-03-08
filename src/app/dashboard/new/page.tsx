@@ -131,10 +131,12 @@ async function List({ accessToken }: { accessToken?: string }) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2.5">
                 {list.name}
-                <a href={list.share_link}>
-                  <ExternalLink size="15" />
-                  <span className="sr-only">View this list on Trakt</span>
-                </a>
+                {list.share_link && (
+                  <a href={list.share_link} target="_blank">
+                    <ExternalLink size="15" />
+                    <span className="sr-only">View this list on Trakt</span>
+                  </a>
+                )}
                 <Badge variant="secondary">{list.privacy}</Badge>
               </CardTitle>
               <CardDescription>
@@ -197,7 +199,7 @@ async function getListsForUser(accessToken: string) {
     headers: {
       "trakt-api-version": "2",
       "trakt-api-key": env.AUTH_TRAKT_ID,
-      Authorization: accessToken,
+      Authorization: `Bearer ${accessToken}`,
     },
   }).catch((err) => {
     console.log("Fetch error", err);
@@ -303,7 +305,7 @@ async function getSeasonsForList(listName: string, accessToken: string) {
       headers: {
         "trakt-api-version": "2",
         "trakt-api-key": env.AUTH_TRAKT_ID,
-        Authorization: accessToken,
+        Authorization: `Bearer ${accessToken}`,
       },
     },
   ).catch((err) => {
