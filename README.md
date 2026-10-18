@@ -1,3 +1,7 @@
+# Archive Note
+
+This project is paused due to Trakt currently not supporting adding seasons to lists.
+
 # Todo
 
 - [ ] No random order changes when selecting or discarding a nomination
@@ -9,6 +13,8 @@
 - [ ] use arktype for env validation
 - [ ] sharing link using web share api
 - [ ] better home page
+- [ ] use of `window.location.origin` instead of env
+- [ ] identification of the trakt user based on name and not id
 
 # Create T3 App
 
